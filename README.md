@@ -1,4 +1,4 @@
-# Regions Music `(v 1.0.0)`
+# Regions Music
 
 An app that play music dynamically according to your location
 
