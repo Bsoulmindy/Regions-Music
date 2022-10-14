@@ -8,7 +8,7 @@ Each zone is caracterized by `geographical space`, and a `music` to play when th
 # Platforms
 
 - Android 4.1
-- iOS `(not builded yet)`
+- iOS `(not built yet)`
 
 # Documentation
 
