@@ -53,6 +53,8 @@ Future<int> insertMusic(Database db, Music music, int zoneAssociedId) async {
 }
 
 Future<int> insertDefaultMusic(Database db, Music music) async {
+  await db.rawQuery("DELETE FROM Music WHERE zone_idref is NULL");
+
   return await db.insert('Music', {
     'path': music.path,
     'zone_idref': null,

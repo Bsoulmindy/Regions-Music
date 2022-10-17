@@ -1,0 +1,28 @@
+name: regions-music
+version: 1.0.1
+summary: Music App
+description: An app to play music according to your location
+
+confinement: strict
+base: core18
+grade: stable
+
+slots:
+  dbus-regions-music:
+    interface: dbus
+    bus: session
+    name: org.bar.regions-music
+    
+apps:
+  regions-music:
+    command: regions-music
+    extensions: [flutter-master]
+    plugs:
+    - network
+    slots:
+      - dbus-regions-music
+parts:
+  regions-music:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart

@@ -42,6 +42,11 @@ dependencies:
   geolocator: ^9.0.1
   path: ^1.8.2
   flutter_launcher_icons: ^0.10.0
+  geolocator_linux: ^0.1.2
+  just_audio_mpv: ^0.1.5
+  sqflite_common_ffi: ^2.1.1+1
+  sqlite3_flutter_libs: ^0.5.10
+  flutter_window_close: ^0.2.2
 
 dev_dependencies:
   flutter_test:

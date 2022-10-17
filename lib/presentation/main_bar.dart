@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:regions_music/application/music_controller.dart';
 import 'package:regions_music/data/file_picker.dart';
@@ -44,8 +45,40 @@ class MainBarState extends State<MainBar> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    FlutterWindowClose.setWindowShouldCloseHandler(() async {
+      return await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                title: const Text('Do you really want to quit?'),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop(true);
+                        await widget.player.stop();
+                      },
+                      child: const Text('Yes')),
+                  ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('No')),
+                ]);
+          });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     isDefaultMusicIsDefined = widget.defaultMusic.value != null;
+
+    if (Platform.isLinux && Process.runSync("which", ["mpv"]).exitCode != 0) {
+      showMessage(
+          Exception(
+              "MPV package is not installed! Therefore we can't play music."),
+          context);
+    }
 
     return DefaultTabController(
       initialIndex: 0,
