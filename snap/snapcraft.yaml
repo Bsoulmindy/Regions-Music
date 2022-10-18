@@ -26,4 +26,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    stage-snaps: latest/edge
+    stage-snaps: edge
