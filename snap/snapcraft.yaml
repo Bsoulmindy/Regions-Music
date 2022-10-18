@@ -15,7 +15,7 @@ slots:
     
 apps:
   regions-music:
-    command: regions-music
+    command: regions_music
     extensions: [flutter-master]
     plugs:
     - network
@@ -26,4 +26,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
-    stage-snaps: edge
+    stage-snaps: [latest/edge]
