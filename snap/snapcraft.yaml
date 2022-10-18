@@ -4,7 +4,7 @@ summary: Music App
 description: An app to play music according to your location
 
 confinement: strict
-base: core20
+base: core18
 grade: devel
 
 slots:
