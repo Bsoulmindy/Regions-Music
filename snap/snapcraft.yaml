@@ -4,8 +4,8 @@ summary: Music App
 description: An app to play music according to your location
 
 confinement: strict
-base: core18
-grade: stable
+base: core20
+grade: devel
 
 slots:
   dbus-regions-music:
@@ -26,3 +26,4 @@ parts:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
+    stage-snaps: latest/edge
