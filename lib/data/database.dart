@@ -12,9 +12,8 @@ import 'package:just_audio/just_audio.dart';
 
 Future<Database> getData() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String dbPath = await getDatabasesPath();
-
-  await Directory(dbPath).create(recursive: true);
+  String dbPath = Directory.current.path;
+  print(dbPath);
 
   return openDatabase(
     // Set the path to the database. Note: Using the `join` function from the

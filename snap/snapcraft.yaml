@@ -16,23 +16,12 @@ slots:
 architectures:
   - amd64
 
-plugs:
-  database-access:
-    interface: personal-files
-    read:
-    - $HOME/.dart_tool
-    write:
-    - $HOME/.dart_tool
-
 apps:
   regions-music:
     command: regions_music
     extensions: [flutter-master]
     plugs:
     - network
-    - home
-    - system-observe
-    - database-access
     slots:
       - dbus-regions-music
 parts:
