@@ -28,9 +28,9 @@ apps:
     - network
     - system-observe
     - process-control
+    - geolocation
     slots:
       - dbus-regions-music
-      - geolocation
 parts:
   regions-music:
     source: .
