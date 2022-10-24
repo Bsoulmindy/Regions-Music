@@ -24,7 +24,6 @@ apps:
     - network
     - system-observe
     - process-control
-    - home
     slots:
       - dbus-regions-music
 parts:
