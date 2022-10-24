@@ -1,5 +1,5 @@
 name: regions-music
-version: 1.0.1
+version: 1.0.2
 summary: Music App
 description: An app to play music according to your location
 
@@ -11,7 +11,7 @@ slots:
   dbus-regions-music:
     interface: dbus
     bus: session
-    name: org.bar.regions-music
+    name: org.bsm.bhc.regions-music
 
 architectures:
   - amd64
