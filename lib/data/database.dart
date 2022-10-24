@@ -12,15 +12,7 @@ import 'package:just_audio/just_audio.dart';
 
 Future<Database> getData() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String dbPath;
-
-  if (Platform.isLinux) {
-    dbPath = "/var/snap/regions-music/common";
-  } else {
-    dbPath = await getDatabasesPath();
-  }
-
-  await Directory(dbPath).create(recursive: true);
+  String dbPath = await getDatabasesPath();
 
   return openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
