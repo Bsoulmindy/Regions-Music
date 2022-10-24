@@ -14,8 +14,7 @@ slots:
     name: org.bar.regions-music
 
 architectures:
-  - build-on: amd64
-    build-for: amd64
+  - amd64
     
 apps:
   regions-music:
