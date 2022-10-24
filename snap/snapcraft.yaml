@@ -12,6 +12,10 @@ slots:
     interface: dbus
     bus: session
     name: org.bsm.bhc.regions-music
+  geolocation:
+    interface: dbus
+    bus: system
+    name: org.freedesktop.GeoClue2
 
 architectures:
   - amd64
@@ -24,9 +28,9 @@ apps:
     - network
     - system-observe
     - process-control
-    - password-manager-service
     slots:
       - dbus-regions-music
+      - geolocation
 parts:
   regions-music:
     source: .
