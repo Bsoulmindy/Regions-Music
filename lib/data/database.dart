@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
@@ -10,12 +12,15 @@ import 'package:just_audio/just_audio.dart';
 
 Future<Database> getData() async {
   WidgetsFlutterBinding.ensureInitialized();
+  String dbPath = await getDatabasesPath();
+
+  await Directory(dbPath).create(recursive: true);
 
   return openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
     // `path` package is best practice to ensure the path is correctly
     // constructed for each platform.
-    join(await getDatabasesPath(), 'zone_database.db'),
+    join(dbPath, 'zone_database.db'),
     // When the database is first created, create the tables.
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
