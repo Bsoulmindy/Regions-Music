@@ -24,6 +24,7 @@ apps:
     - network
     - system-observe
     - process-control
+    - password-manager-service
     slots:
       - dbus-regions-music
 parts:
