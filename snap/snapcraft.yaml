@@ -12,6 +12,10 @@ slots:
     interface: dbus
     bus: session
     name: org.bar.regions-music
+
+architectures:
+  - build-on: amd64
+    build-for: amd64
     
 apps:
   regions-music:
