@@ -22,6 +22,8 @@ apps:
     extensions: [flutter-master]
     plugs:
     - network
+    - home
+    - system-observe
     slots:
       - dbus-regions-music
 parts:
