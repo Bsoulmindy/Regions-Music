@@ -12,6 +12,8 @@ slots:
     interface: dbus
     bus: session
     name: org.bsm.bhc.regions-music
+
+plugs:
   geolocation:
     interface: dbus
     bus: system
