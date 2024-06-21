@@ -50,3 +50,6 @@ app.*.map.json
 coverage/
 .scannerwork/
 tests.output
+
+# Tests
+*.mocks.dart
