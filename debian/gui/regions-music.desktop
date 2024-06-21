@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=regions-music
+Comment=An app to play music according to your location
+Exec=regions-music
+Icon=${SNAP}/meta/gui/regions-music.png
+Terminal=false
+Type=Application
+Categories=Audio;
+Name[fr_FR]=regions-music.desktop

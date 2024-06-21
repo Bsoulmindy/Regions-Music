@@ -105,6 +105,7 @@ class ZonesState extends State<Zones> {
                                             musicFile = f;
                                           });
                                         } on AlertException catch (e) {
+                                          if (!context.mounted) return;
                                           showMessage(e, context);
                                         }
                                       },
@@ -127,6 +128,7 @@ class ZonesState extends State<Zones> {
                                             imageFile = f;
                                           });
                                         } on AlertException catch (e) {
+                                          if (!context.mounted) return;
                                           showMessage(e, context);
                                         }
                                       },
@@ -160,6 +162,7 @@ class ZonesState extends State<Zones> {
                                   snapshot.data!.add(z);
                                   setState(() {});
                                 } on AlertException catch (e) {
+                                  if (!context.mounted) return;
                                   showMessage(e, context);
                                 }
                               },

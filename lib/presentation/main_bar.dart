@@ -138,6 +138,7 @@ class MainBarState extends State<MainBar> {
                 try {
                   musicFile = await fileAudioPick();
                 } on AlertException catch (e) {
+                  if (!context.mounted) return;
                   showMessage(e, context);
                 }
                 if (musicFile != null) {

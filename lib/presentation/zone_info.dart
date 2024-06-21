@@ -170,9 +170,9 @@ class ZoneInfosState extends State<ZoneInfos> {
                           ))),
                 ],
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Center(
                     child: Text(
                       "Forms",
@@ -266,6 +266,7 @@ class ZoneInfosState extends State<ZoneInfos> {
                                             pointsFile = f;
                                           });
                                         } on AlertException catch (e) {
+                                          if (!context.mounted) return;
                                           showMessage(e, context);
                                         }
                                       },
@@ -288,6 +289,7 @@ class ZoneInfosState extends State<ZoneInfos> {
                                       widget.db, pointsFile, snapshot.data!);
                                   setState(() {});
                                 } on AlertException catch (e) {
+                                  if (!context.mounted) return;
                                   showMessage(e, context);
                                 }
                               },
@@ -347,6 +349,7 @@ void changeMusic(Database db, Zone zone, BuildContext context) async {
   try {
     await changeMusicforZone(db, zone);
   } on AlertException catch (e) {
+    if (!context.mounted) return;
     showMessage(e, context);
   }
 }
@@ -355,6 +358,7 @@ void changeImage(Database db, Zone zone, BuildContext context) async {
   try {
     await changeImageforZone(db, zone);
   } on AlertException catch (e) {
+    if (!context.mounted) return;
     showMessage(e, context);
   }
 }
