@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/application/music_controller.dart';
 import 'package:regions_music/data/file_picker.dart';
 import 'package:regions_music/domain/music.dart';
@@ -24,7 +27,9 @@ class MainBar extends StatefulWidget {
       required this.defaultMusic,
       required this.currentMusic,
       required this.zones,
-      required this.currentZone});
+      required this.currentZone,
+      this.streamPos,
+      this.streamLocationFunction = updatorPosition});
 
   final Database db;
   final AudioPlayer player;
@@ -32,6 +37,15 @@ class MainBar extends StatefulWidget {
   final Wrapper<Music> currentMusic;
   final List<Zone> zones;
   final Wrapper<Zone> currentZone;
+  final Stream<Position>? streamPos;
+  final Future<StreamSubscription<Position>?> Function(
+      Wrapper<Zone>,
+      Music?,
+      Wrapper<Music>,
+      Database,
+      AudioPlayer,
+      void Function(),
+      Stream<Position>?) streamLocationFunction;
 
   @override
   State<MainBar> createState() => MainBarState();
@@ -106,6 +120,8 @@ class MainBarState extends State<MainBar> {
                 db: widget.db,
                 defaultMusic: widget.defaultMusic,
                 player: widget.player,
+                streamLocationFunction: widget.streamLocationFunction,
+                streamPos: widget.streamPos,
               ),
             ),
             Center(

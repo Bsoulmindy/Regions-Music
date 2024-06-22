@@ -59,7 +59,8 @@ Future<StreamSubscription<Position>?> updatorPosition(
     Wrapper<Music> currentMusic,
     Database db,
     AudioPlayer player,
-    void Function() setStateIfMounted) async {
+    void Function() setStateIfMounted,
+    Stream<Position?>? streamPosMock) async {
   const LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 0,
