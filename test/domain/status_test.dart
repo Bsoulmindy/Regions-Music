@@ -7,8 +7,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import 'package:regions_music/data/database.dart';
 import 'package:regions_music/domain/form.dart' as f;
+import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
 import 'package:regions_music/domain/point.dart';
 import 'package:regions_music/domain/position_factory.dart';
@@ -43,23 +45,25 @@ Zone zoneChild2 =
 void main() {
   testWidgets("Changing zone status after zone change", (tester) async {
     List<Zone> zones = [parent, zone, zoneChild1, zoneChild2];
-    Wrapper<Zone> currentZone = Wrapper(zone);
-    Wrapper<Music> currentMusic = Wrapper(testMusic);
+    Zone currentZone = zone;
+    Music currentMusic = testMusic;
     StreamController<Position> controllerMock = StreamController<Position>();
     Stream<Position> mockStream = controllerMock.stream;
 
     prepareMocks(audioPlayer, db);
 
     var statusWidget = MaterialApp(
-        home: MainBar(
-      db: db,
-      player: audioPlayer,
-      defaultMusic: currentMusic,
-      zones: zones,
-      currentZone: currentZone,
-      currentMusic: currentMusic,
-      streamPos: mockStream,
-      streamLocationFunction: updatorPositionMock,
+        home: Provider(
+      create: (BuildContext context) => GlobalState(
+          db: db,
+          player: audioPlayer,
+          currentZone: currentZone,
+          currentMusic: currentMusic,
+          zones: zones),
+      child: MainBar(
+        streamPos: mockStream,
+        streamLocationFunction: updatorPositionMock,
+      ),
     ));
 
     await tester.pumpWidget(statusWidget);
