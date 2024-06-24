@@ -1,30 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
+import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/zone.dart';
-import 'package:sqflite/sqflite.dart';
-
-import '../application/gps.dart';
-import '../domain/music.dart';
-import '../domain/wrapper.dart';
 
 class Status extends StatefulWidget {
-  const Status(
-      {super.key,
-      required this.db,
-      required this.player,
-      required this.defaultMusic,
-      required this.currentMusic,
-      required this.zones,
-      required this.currentZone});
-
-  final Database db;
-  final AudioPlayer player;
-  final Wrapper<Music> defaultMusic;
-  final Wrapper<Music> currentMusic;
-  final List<Zone> zones;
-  final Wrapper<Zone> currentZone;
+  const Status({super.key});
 
   @override
   State<Status> createState() => StatusState();
@@ -34,35 +16,23 @@ class StatusState extends State<Status> {
   String actualZone = "No Zone";
   int currentLevel = 0;
 
-  void setStateIfMounted() {
-    if (mounted) setState(() {});
-  }
-
   @override
   void initState() {
-    updatorPosition(widget.currentZone, widget.defaultMusic.value,
-        widget.currentMusic, widget.db, widget.player, setStateIfMounted);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    actualZone = widget.currentZone.value == null
-        ? "No Zone"
-        : widget.currentZone.value!.name;
-    currentLevel = widget.currentZone.value == null
-        ? 0
-        : widget.currentZone.value!.music.currentLevel;
-
-    if (widget.defaultMusic.value != null) {
+    GlobalState state = context.watch<GlobalState>();
+    if (state.defaultMusic != null) {
       return Column(
         children: <Widget>[
-          getStatusZone(actualZone),
+          getStatusZone(state.currentZone),
           Expanded(
               flex: 3,
               child: Align(
                   alignment: Alignment.center,
-                  child: getImage(widget.currentZone.value)))
+                  child: getImage(state.currentZone)))
         ],
       );
     } else {
@@ -83,29 +53,29 @@ class StatusState extends State<Status> {
                   ],
                 )),
           ),
-          getStatusZone(actualZone),
+          getStatusZone(state.currentZone),
           Expanded(
               flex: 3,
               child: Align(
                   alignment: Alignment.center,
-                  child: getImage(widget.currentZone.value)))
+                  child: getImage(state.currentZone)))
         ],
       );
     }
   }
 }
 
-Widget getStatusZone(String actualZone) {
+Widget getStatusZone(Zone? actualZone) {
   return Expanded(
       flex: 1,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text("Actual Zone", style: TextStyle(fontSize: 32)),
-          Text(actualZone,
+          Text(actualZone != null ? actualZone.name : "No Zone",
               style: TextStyle(
                   fontSize: 20,
-                  color: actualZone == "No Zone" ? Colors.red : Colors.green)),
+                  color: actualZone != null ? Colors.red : Colors.green)),
         ],
       ));
 }

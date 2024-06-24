@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import 'package:regions_music/domain/form.dart' as f;
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
@@ -13,8 +15,9 @@ import 'package:regions_music/domain/point.dart';
 import 'package:regions_music/domain/position_factory.dart';
 import 'package:regions_music/domain/segment.dart';
 import 'package:regions_music/domain/zone.dart';
+import 'package:regions_music/presentation/main_bar.dart';
 import 'package:sqflite/sqflite.dart';
-import 'zone_test.mocks.dart';
+import 'status_test.mocks.dart';
 
 final audioPlayer = MockAudioPlayer();
 final db = MockDatabase();
@@ -32,85 +35,57 @@ f.Form formChild2 = f.Form.fromPoints(
 Zone parent = Zone.fromForm(0, "parent", "image", formParent, testMusic, null);
 Zone zone = Zone.fromForm(1, "zone", "image", form, testMusic, parent);
 Zone zoneChild1 =
-    Zone.fromForm(2, "zone", "image", formChild1, testMusic, zone);
+    Zone.fromForm(2, "zoneChild1", "image", formChild1, testMusic, zone);
 Zone zoneChild2 =
-    Zone.fromForm(3, "zone", "image", formChild2, testMusic, zone);
+    Zone.fromForm(3, "zoneChild2", "image", formChild2, testMusic, zone);
 
 @GenerateNiceMocks([MockSpec<AudioPlayer>(), MockSpec<Database>()])
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  group("Interaction of zones with location", () {
+  testWidgets("Changing zone status after zone change", (tester) async {
     List<Zone> zones = [parent, zone, zoneChild1, zoneChild2];
     Zone currentZone = zone;
     Music currentMusic = testMusic;
-    GlobalState state = GlobalState(
-        db: db,
-        player: audioPlayer,
-        currentMusic: currentMusic,
-        currentZone: currentZone,
-        zones: zones);
+    StreamController<Position> controllerMock = StreamController<Position>();
+    Stream<Position> mockStream = controllerMock.stream;
 
     prepareMocks(audioPlayer, db);
+    var globalState = GlobalState(
+        db: db,
+        player: audioPlayer,
+        zones: zones,
+        currentZone: currentZone,
+        currentMusic: currentMusic);
+    mockStream.listen((pos) => updateCurrentZoneOnLocation(globalState, pos));
 
-    test("Interacting with a child zone", () async {
-      //Initial
-      Position pos = createMockPosition(0, 0);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, zone,
-          reason: "Initially should be in main zone");
+    var statusWidget = MaterialApp(
+        home: ChangeNotifierProvider.value(
+      value: globalState,
+      child: const MainBar(),
+    ));
 
-      //Entering the child zone 1
-      pos = createMockPosition(4, 4);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, zoneChild1, reason: "We moved to child zone 1");
+    await tester.pumpWidget(statusWidget);
+    await tester.pump(const Duration(milliseconds: 200));
 
-      //Leaving the child zone 1
-      pos = createMockPosition(2, 2);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, zone,
-          reason: "We moved back to main zone from child zone 1");
-    });
+    //Initial
+    Position pos = createMockPosition(0, 0);
+    controllerMock.add(pos);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text(zone.name), findsOneWidget,
+        reason: "Initially the status should display the main zone");
 
-    test("Interacting with a parent zone", () async {
-      //Initial
-      Position pos = createMockPosition(0, 0);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, zone,
-          reason: "Initially should be in main zone");
+    //Entering the child zone 1
+    pos = createMockPosition(4, 4);
+    controllerMock.add(pos);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text(zoneChild1.name), findsOneWidget,
+        reason: "We moved to child zone 1");
 
-      //Entering the parent zone
-      pos = createMockPosition(8, 8);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, parent,
-          reason: "We exited the main zone, but we still in parent zone");
-
-      //Moving back to main zone
-      pos = createMockPosition(2, 2);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, zone,
-          reason: "We moved back to main zone from parent zone");
-    });
-
-    test("Interacting with no zone", () async {
-      //Initial
-      Position pos = createMockPosition(8, 8);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, parent,
-          reason: "Initially should be in parent zone");
-
-      //Exiting the area
-      pos = createMockPosition(1000, 1000);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, null,
-          reason: "We exited the parent zone, we are in nowhere");
-
-      //Moving back to parent zone
-      pos = createMockPosition(8, 8);
-      await updateCurrentZoneOnLocation(state, pos);
-      expect(state.currentZone, parent,
-          reason: "We moved back to main zone from parent zone");
-    });
+    //Leaving the child zone 1
+    pos = createMockPosition(2, 2);
+    controllerMock.add(pos);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text(zone.name), findsOneWidget,
+        reason: "We moved back to main zone from child zone 1");
   });
 }
 
@@ -127,6 +102,8 @@ Position createMockPosition(double x, double y) {
       altitudeAccuracy: 0,
       headingAccuracy: 0);
 }
+
+void setStateIfMountedMock() {}
 
 void prepareMocks(MockAudioPlayer player, MockDatabase db) {
   when(db.rawQuery("SELECT * FROM Zone WHERE zone_idref = ?", [parent.id]))
