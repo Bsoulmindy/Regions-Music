@@ -1,14 +1,6 @@
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:regions_music/data/database.dart';
-import 'package:regions_music/domain/position_factory.dart';
-import 'package:regions_music/domain/wrapper.dart';
-import 'package:regions_music/domain/zone.dart';
-import 'package:sqflite/sqflite.dart';
-
-import '../domain/music.dart';
 
 /// Determine the current position of the device.
 ///
@@ -52,22 +44,10 @@ Future<Position> determinePosition() async {
       desiredAccuracy: LocationAccuracy.high);
 }
 
-/// Update the currentZone dynamically for each location update
-Future<StreamSubscription<Position>?> updatorPosition(
-    Wrapper<Zone> currentZone,
-    Music? defaultMusic,
-    Wrapper<Music> currentMusic,
-    Database db,
-    AudioPlayer player,
-    void Function() setStateIfMounted,
-    Stream<Position?>? streamPosMock) async {
-  const LocationSettings locationSettings = LocationSettings(
+Stream<Position> getGPSStreamPosition() {
+  return Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 0,
-  );
-
-  List<Zone> zones = await getMostParentZones(db, player);
-
-  return PositionFactory().getStreamSubscription(currentZone, defaultMusic,
-      currentMusic, db, player, zones, () {}, locationSettings);
+  ));
 }

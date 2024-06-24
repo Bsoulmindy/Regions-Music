@@ -1,41 +1,21 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/application/music_controller.dart';
 import 'package:regions_music/data/file_picker.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
-import 'package:regions_music/domain/wrapper.dart';
 import 'package:regions_music/presentation/music_info.dart';
 import 'package:regions_music/presentation/status.dart';
 import 'package:regions_music/presentation/zones.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../domain/alert_exception.dart';
-import '../domain/zone.dart';
 import 'exception_message.dart';
 
 class MainBar extends StatefulWidget {
-  const MainBar(
-      {super.key,
-      this.streamPos,
-      this.streamLocationFunction = updatorPosition});
-
-  final Stream<Position>? streamPos;
-  final Future<StreamSubscription<Position>?> Function(
-      Wrapper<Zone>,
-      Music?,
-      Wrapper<Music>,
-      Database,
-      AudioPlayer,
-      void Function(),
-      Stream<Position>?) streamLocationFunction;
+  const MainBar({super.key});
 
   @override
   State<MainBar> createState() => MainBarState();
@@ -96,15 +76,12 @@ class MainBarState extends State<MainBar> {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: <Widget>[
             Center(
-              child: Status(
-                streamLocationFunction: widget.streamLocationFunction,
-                streamPos: widget.streamPos,
-              ),
+              child: Status(),
             ),
-            const Center(
+            Center(
               child: Zones(),
             ),
           ],

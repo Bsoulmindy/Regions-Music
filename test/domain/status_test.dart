@@ -8,14 +8,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:regions_music/data/database.dart';
 import 'package:regions_music/domain/form.dart' as f;
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
 import 'package:regions_music/domain/point.dart';
 import 'package:regions_music/domain/position_factory.dart';
 import 'package:regions_music/domain/segment.dart';
-import 'package:regions_music/domain/wrapper.dart';
 import 'package:regions_music/domain/zone.dart';
 import 'package:regions_music/presentation/main_bar.dart';
 import 'package:sqflite/sqflite.dart';
@@ -51,19 +49,18 @@ void main() {
     Stream<Position> mockStream = controllerMock.stream;
 
     prepareMocks(audioPlayer, db);
+    var globalState = GlobalState(
+        db: db,
+        player: audioPlayer,
+        zones: zones,
+        currentZone: currentZone,
+        currentMusic: currentMusic);
+    mockStream.listen((pos) => updateCurrentZoneOnLocation(globalState, pos));
 
     var statusWidget = MaterialApp(
-        home: Provider(
-      create: (BuildContext context) => GlobalState(
-          db: db,
-          player: audioPlayer,
-          currentZone: currentZone,
-          currentMusic: currentMusic,
-          zones: zones),
-      child: MainBar(
-        streamPos: mockStream,
-        streamLocationFunction: updatorPositionMock,
-      ),
+        home: ChangeNotifierProvider.value(
+      value: globalState,
+      child: const MainBar(),
     ));
 
     await tester.pumpWidget(statusWidget);
@@ -151,6 +148,11 @@ void prepareMocks(MockAudioPlayer player, MockDatabase db) {
   when(db.rawQuery("SELECT * FROM Zone WHERE id = ?", [zoneChild2.id]))
       .thenAnswer((_) => convertZoneToList(zoneChild2));
 
+  // Most Parent Zones
+  when(db.rawQuery("SELECT * FROM Zone WHERE zone_idref is NULL"))
+      .thenAnswer((_) => convertZoneToList(parent));
+
+  // Musics & Levels
   for (int i = 0; i < 4; i++) {
     when(db.rawQuery("SELECT * FROM Music WHERE zone_idref = ?", [i]))
         .thenAnswer((_) => convertMusicToList([testMusic]));
@@ -240,25 +242,4 @@ Future<List<Map<String, dynamic>>> convertZoneToList(Zone zone) async {
   list.add(map);
 
   return list;
-}
-
-Future<StreamSubscription<Position>?> updatorPositionMock(
-    Wrapper<Zone> currentZone,
-    Music? defaultMusic,
-    Wrapper<Music> currentMusic,
-    Database db,
-    AudioPlayer player,
-    void Function() setStateIfMounted,
-    Stream<Position>? streamPosMock) async {
-  List<Zone> zones = await getMostParentZones(db, player);
-
-  if (streamPosMock == null) {
-    return Future.delayed(const Duration(seconds: 1));
-  }
-  return streamPosMock.listen(
-    (pos) {
-      updateCurrentZoneOnLocation(currentZone, testMusic, currentMusic, db,
-          audioPlayer, zones, setStateIfMounted, pos);
-    },
-  );
 }

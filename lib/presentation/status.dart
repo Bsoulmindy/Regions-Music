@@ -1,33 +1,12 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/zone.dart';
-import 'package:sqflite/sqflite.dart';
-
-import '../application/gps.dart';
-import '../domain/music.dart';
-import '../domain/wrapper.dart';
 
 class Status extends StatefulWidget {
-  const Status(
-      {super.key,
-      this.streamPos,
-      this.streamLocationFunction = updatorPosition});
-
-  final Stream<Position>? streamPos;
-  final Future<StreamSubscription<Position>?> Function(
-      Wrapper<Zone>,
-      Music?,
-      Wrapper<Music>,
-      Database,
-      AudioPlayer,
-      void Function(),
-      Stream<Position>?) streamLocationFunction;
+  const Status({super.key});
 
   @override
   State<Status> createState() => StatusState();
@@ -39,14 +18,6 @@ class StatusState extends State<Status> {
 
   @override
   void initState() {
-    widget.streamLocationFunction(
-        widget.currentZone,
-        widget.defaultMusic.value,
-        widget.currentMusic,
-        widget.db,
-        widget.player,
-        setStateIfMounted,
-        widget.streamPos);
     super.initState();
   }
 

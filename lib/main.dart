@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
+import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/data/database.dart';
 import 'package:regions_music/domain/global_state.dart';
+import 'package:regions_music/domain/position_factory.dart';
 import 'package:regions_music/presentation/main_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -23,16 +25,19 @@ void main() async {
 
   Database db = await getData();
   AudioPlayer player = AudioPlayer();
-
   Music? defaultMusic = await getDefaultMusic(db, player);
   List<Zone> zones = await z.getAllZones(db, player);
+
+  var globalState = GlobalState(
+      db: db, player: player, defaultMusic: defaultMusic, zones: zones);
+  getGPSStreamPosition()
+      .listen((pos) => updateCurrentZoneOnLocation(globalState, pos));
 
   runApp(MediaQuery(
     data: const MediaQueryData(),
     child: MaterialApp(
-        home: Provider(
-      create: (BuildContext context) => GlobalState(
-          db: db, player: player, defaultMusic: defaultMusic, zones: zones),
+        home: ChangeNotifierProvider.value(
+      value: globalState,
       child: const MainBar(),
     )),
   ));
