@@ -3,40 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:mockito/annotations.dart';
-import 'package:regions_music/domain/form.dart' as f;
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
-import 'package:regions_music/domain/point.dart';
 import 'package:regions_music/domain/position_factory.dart';
 import 'package:regions_music/domain/zone.dart';
 import 'package:sqflite/sqflite.dart';
-import 'zone_test.mocks.dart';
-import 'zone_test.dart';
-
-final audioPlayer = MockAudioPlayer();
-final db = MockDatabase();
-Music testMusicDefault = Music(0, "path", [0, 1000, 2500], audioPlayer);
-Music testMusicParent = Music(1, "path", [0, 1000, 2500], audioPlayer);
-Music testMusic = Music(2, "path", [0, 1000, 2500], audioPlayer);
-Music testMusicChild1 = Music(3, "path", [0, 1000, 2500], audioPlayer);
-Music testMusicChild2 = Music(4, "path", [0, 1000, 2500], audioPlayer);
-
-f.Form formParent = f.Form.fromPoints(
-    0, [Point(10, 10), Point(-10, 10), Point(-10, -10), Point(10, -10)]);
-f.Form form = f.Form.fromPoints(
-    1, [Point(5, 5), Point(-5, 5), Point(-5, -5), Point(5, -5)]);
-f.Form formChild1 =
-    f.Form.fromPoints(2, [Point(5, 5), Point(3, 5), Point(3, 3), Point(5, 3)]);
-f.Form formChild2 = f.Form.fromPoints(
-    3, [Point(-5, -5), Point(-3, -5), Point(-3, -3), Point(-5, -3)]);
-
-Zone parent =
-    Zone.fromForm(0, "parent", "image", formParent, testMusicParent, null);
-Zone zone = Zone.fromForm(1, "zone", "image", form, testMusic, parent);
-Zone zoneChild1 =
-    Zone.fromForm(2, "zoneChild1", "image", formChild1, testMusicChild1, zone);
-Zone zoneChild2 =
-    Zone.fromForm(3, "zoneChild2", "image", formChild2, testMusicChild2, zone);
+import '../utils/utils.dart';
 
 @GenerateNiceMocks([MockSpec<AudioPlayer>(), MockSpec<Database>()])
 void main() {
@@ -46,16 +18,16 @@ void main() {
     List<Zone> zones = [parent, zone, zoneChild1, zoneChild2];
     Zone currentZone = zone;
     Music currentMusic = testMusicDefault;
-    GlobalState state = GlobalState(
-        db: db,
-        player: audioPlayer,
-        currentMusic: currentMusic,
-        currentZone: currentZone,
-        zones: zones);
 
     prepareMocks(audioPlayer, db);
 
     test("Zone change : Base -> Child", () async {
+      GlobalState state = GlobalState(
+          db: db,
+          player: audioPlayer,
+          currentMusic: currentMusic,
+          currentZone: currentZone,
+          zones: zones);
       //Initial
       Position pos = createMockPosition(0, 0);
       await updateCurrentZoneOnLocation(state, pos);
@@ -70,6 +42,12 @@ void main() {
     });
 
     test("Infinite Loop", () async {
+      GlobalState state = GlobalState(
+          db: db,
+          player: audioPlayer,
+          currentMusic: currentMusic,
+          currentZone: currentZone,
+          zones: zones);
       //Initial : First Level
       Position pos = createMockPosition(0, 0);
       await updateCurrentZoneOnLocation(state, pos);
@@ -92,6 +70,12 @@ void main() {
     });
 
     test("Persistance of music when slight zone change", () async {
+      GlobalState state = GlobalState(
+          db: db,
+          player: audioPlayer,
+          currentMusic: currentMusic,
+          currentZone: currentZone,
+          zones: zones);
       //Initial : First Level
       Position pos = createMockPosition(0, 0);
       await updateCurrentZoneOnLocation(state, pos);
@@ -118,6 +102,12 @@ void main() {
 
     test("Parent music level should also be incremented as the base music",
         () async {
+      GlobalState state = GlobalState(
+          db: db,
+          player: audioPlayer,
+          currentMusic: currentMusic,
+          currentZone: currentZone,
+          zones: zones);
       //Initial : First Level
       Position pos = createMockPosition(0, 0);
       await updateCurrentZoneOnLocation(state, pos);
@@ -155,6 +145,12 @@ void main() {
     });
 
     test("Inactivity", () async {
+      GlobalState state = GlobalState(
+          db: db,
+          player: audioPlayer,
+          currentMusic: currentMusic,
+          currentZone: currentZone,
+          zones: zones);
       //Initial
       Position pos = createMockPosition(1000, 1000);
       await updateCurrentZoneOnLocation(state, pos);
