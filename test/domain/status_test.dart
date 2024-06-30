@@ -25,6 +25,7 @@ void main() {
         player: audioPlayer,
         zones: zones,
         currentZone: currentZone,
+        defaultMusic: testMusicDefault,
         currentMusic: currentMusic);
     mockStream.listen((pos) => updateCurrentZoneOnLocation(globalState, pos));
 

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:mockito/mockito.dart';
 import 'package:regions_music/domain/form.dart' as f;
 import 'package:regions_music/domain/music.dart';
@@ -13,11 +14,11 @@ import '../domain/zone_test.mocks.dart';
 
 final audioPlayer = MockAudioPlayer();
 final db = MockDatabase();
-Music testMusicDefault = Music(0, "path", [0, 1000], audioPlayer);
-Music testMusicParent = Music(1, "path", [0, 1000], audioPlayer);
-Music testMusic = Music(2, "path", [0, 1000], audioPlayer);
-Music testMusicChild1 = Music(3, "path", [0, 1000], audioPlayer);
-Music testMusicChild2 = Music(4, "path", [0, 1000], audioPlayer);
+Music testMusicDefault = Music(0, "path", [0, 800, 2800], audioPlayer);
+Music testMusicParent = Music(1, "path", [0, 800, 2800], audioPlayer);
+Music testMusic = Music(2, "path", [0, 800, 2800], audioPlayer);
+Music testMusicChild1 = Music(3, "path", [0, 800, 2800], audioPlayer);
+Music testMusicChild2 = Music(4, "path", [0, 800, 2800], audioPlayer);
 
 f.Form formParent = f.Form.fromPoints(
     0, [Point(10, 10), Point(-10, 10), Point(-10, -10), Point(10, -10)]);
@@ -121,6 +122,16 @@ void prepareMocks(MockAudioPlayer player, MockDatabase db) {
   when(db.rawQuery(
           "SELECT * FROM Level WHERE music_idref = ?", [testMusicChild2.id]))
       .thenAnswer((_) => convertLevelsToList(testMusicChild2));
+
+  // Audio Player
+  when(player.playerStateStream).thenAnswer((_) {
+    return Stream.fromFutures([
+      Future.delayed(const Duration(milliseconds: 200))
+          .then((_) => PlayerState(false, ProcessingState.completed)),
+      Future.delayed(const Duration(milliseconds: 2200))
+          .then((_) => PlayerState(false, ProcessingState.completed)),
+    ]);
+  });
 }
 
 Future<List<Map<String, dynamic>>> convertZonesToList(List<Zone> zones) async {

@@ -23,6 +23,7 @@ void main() {
         player: audioPlayer,
         currentMusic: currentMusic,
         currentZone: currentZone,
+        defaultMusic: testMusicDefault,
         zones: zones);
 
     prepareMocks(audioPlayer, db);

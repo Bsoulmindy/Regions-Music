@@ -17,7 +17,7 @@ void main() {
   group("Music Tests", () {
     List<Zone> zones = [parent, zone, zoneChild1, zoneChild2];
     Zone currentZone = zone;
-    Music currentMusic = testMusicDefault;
+    Music? currentMusic;
 
     prepareMocks(audioPlayer, db);
 
@@ -27,6 +27,7 @@ void main() {
           player: audioPlayer,
           currentMusic: currentMusic,
           currentZone: currentZone,
+          defaultMusic: testMusicDefault,
           zones: zones);
       //Initial
       Position pos = createMockPosition(0, 0);
@@ -47,6 +48,7 @@ void main() {
           player: audioPlayer,
           currentMusic: currentMusic,
           currentZone: currentZone,
+          defaultMusic: testMusicDefault,
           zones: zones);
       //Initial : First Level
       Position pos = createMockPosition(0, 0);
@@ -57,13 +59,13 @@ void main() {
           reason: "Initially the base music level should be 0");
 
       //Second Level
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1000));
       expect(state.currentMusic!.currentLevel, 1,
           reason:
               "After 1 second elpased, the base music level should be saved to 1");
 
       //Third Level
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(milliseconds: 2000));
       expect(state.currentMusic!.currentLevel, 2,
           reason:
               "After 2 second elpased, the base music level should be saved to 2");
@@ -75,6 +77,7 @@ void main() {
           player: audioPlayer,
           currentMusic: currentMusic,
           currentZone: currentZone,
+          defaultMusic: testMusicDefault,
           zones: zones);
       //Initial : First Level
       Position pos = createMockPosition(0, 0);
@@ -107,6 +110,7 @@ void main() {
           player: audioPlayer,
           currentMusic: currentMusic,
           currentZone: currentZone,
+          defaultMusic: testMusicDefault,
           zones: zones);
       //Initial : First Level
       Position pos = createMockPosition(0, 0);
@@ -150,6 +154,7 @@ void main() {
           player: audioPlayer,
           currentMusic: currentMusic,
           currentZone: currentZone,
+          defaultMusic: testMusicDefault,
           zones: zones);
       //Initial
       Position pos = createMockPosition(1000, 1000);
@@ -164,6 +169,8 @@ void main() {
       await Future.delayed(const Duration(seconds: 3));
       pos = createMockPosition(1000, 1000);
       await updateCurrentZoneOnLocation(state, pos);
+      expect(state.currentMusic, testMusicDefault,
+          reason: "Should be the default music");
       expect(state.currentMusic!.currentLevel, 0,
           reason:
               "The default music level should be resetted to 0 after the inactivity");
