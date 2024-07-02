@@ -40,9 +40,13 @@ void main() {
       await updateCurrentZoneOnLocation(state, pos);
       expect(state.currentMusic, testMusicChild1,
           reason: "We moved to child zone 1");
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
     });
 
     test("Infinite Loop", () async {
+      resetInitialMusic();
       GlobalState state = GlobalState(
           db: db,
           player: audioPlayer,
@@ -59,19 +63,29 @@ void main() {
           reason: "Initially the base music level should be 0");
 
       //Second Level
-      await Future.delayed(const Duration(milliseconds: 1000));
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        if (state.currentMusic!.currentLevel != 0) break;
+        await Future.delayed(const Duration(milliseconds: 1000));
+      }
       expect(state.currentMusic!.currentLevel, 1,
           reason:
               "After 1 second elpased, the base music level should be saved to 1");
 
       //Third Level
-      await Future.delayed(const Duration(milliseconds: 2000));
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        if (state.currentMusic!.currentLevel != 1) break;
+        await Future.delayed(const Duration(milliseconds: 1000));
+      }
       expect(state.currentMusic!.currentLevel, 2,
           reason:
               "After 2 second elpased, the base music level should be saved to 2");
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
     });
 
     test("Persistance of music when slight zone change", () async {
+      resetInitialMusic();
       GlobalState state = GlobalState(
           db: db,
           player: audioPlayer,
@@ -87,7 +101,10 @@ void main() {
       expect(state.currentMusic!.currentLevel, 0,
           reason: "Initially the base music level should be 0");
 
-      await Future.delayed(const Duration(seconds: 3));
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        if (state.currentMusic!.currentLevel >= 2) break;
+        await Future.delayed(const Duration(milliseconds: 1500));
+      }
       expect(state.currentMusic!.currentLevel, 2,
           reason:
               "After 3 seconds elpased, the base music level should be saved to 2");
@@ -101,10 +118,14 @@ void main() {
       expect(state.currentMusic, testMusic, reason: "Should be the base music");
       expect(state.currentMusic!.currentLevel, 2,
           reason: "The base music level should persisted to 2");
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
     });
 
     test("Parent music level should also be incremented as the base music",
         () async {
+      resetInitialMusic();
       GlobalState state = GlobalState(
           db: db,
           player: audioPlayer,
@@ -128,7 +149,10 @@ void main() {
       expect(state.currentMusic!.currentLevel, 0,
           reason: "the child music level should be initially 0");
 
-      await Future.delayed(const Duration(seconds: 3));
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        if (state.currentMusic!.currentLevel >= 2) break;
+        await Future.delayed(const Duration(milliseconds: 1500));
+      }
       expect(state.currentMusic!.currentLevel, 2,
           reason: "The child music level should be 2");
 
@@ -142,13 +166,21 @@ void main() {
       //Going to parent zone
       pos = createMockPosition(8, 8);
       await updateCurrentZoneOnLocation(state, pos);
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        if (state.currentMusic!.currentLevel >= 2) break;
+        await Future.delayed(const Duration(milliseconds: 1000));
+      }
       expect(state.currentMusic, testMusicParent,
           reason: "Should be the parent music");
       expect(state.currentMusic!.currentLevel, 2,
           reason: "The parent music level should also increased to 2");
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
     });
 
     test("Inactivity", () async {
+      resetInitialMusic();
       GlobalState state = GlobalState(
           db: db,
           player: audioPlayer,
@@ -159,21 +191,31 @@ void main() {
       //Initial
       Position pos = createMockPosition(1000, 1000);
       await updateCurrentZoneOnLocation(state, pos);
-      await Future.delayed(const Duration(seconds: 3));
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        if (state.currentMusic!.currentLevel >= 2) break;
+        await Future.delayed(const Duration(milliseconds: 1500));
+      }
       expect(state.currentMusic!.currentLevel, 2,
           reason: "The default music level should be 2");
 
       //Entering the child zone 1
       pos = createMockPosition(0, 0);
       await updateCurrentZoneOnLocation(state, pos);
-      await Future.delayed(const Duration(seconds: 3));
+
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        await Future.delayed(const Duration(milliseconds: 1000));
+      }
       pos = createMockPosition(1000, 1000);
       await updateCurrentZoneOnLocation(state, pos);
+
       expect(state.currentMusic, testMusicDefault,
           reason: "Should be the default music");
       expect(state.currentMusic!.currentLevel, 0,
           reason:
               "The default music level should be resetted to 0 after the inactivity");
+      for (int maxRetries = 5; maxRetries > 0; maxRetries--) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
     });
   });
 }

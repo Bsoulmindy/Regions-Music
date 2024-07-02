@@ -124,14 +124,15 @@ void prepareMocks(MockAudioPlayer player, MockDatabase db) {
       .thenAnswer((_) => convertLevelsToList(testMusicChild2));
 
   // Audio Player
-  when(player.playerStateStream).thenAnswer((_) {
-    return Stream.fromFutures([
-      Future.delayed(const Duration(milliseconds: 200))
-          .then((_) => PlayerState(false, ProcessingState.completed)),
-      Future.delayed(const Duration(milliseconds: 2200))
-          .then((_) => PlayerState(false, ProcessingState.completed)),
-    ]);
-  });
+  when(player.playerStateStream).thenAnswer((_) => createPlayerStateStream());
+}
+
+Stream<PlayerState> createPlayerStateStream() async* {
+  await Future.delayed(const Duration(milliseconds: 200));
+  yield PlayerState(false, ProcessingState.completed);
+
+  await Future.delayed(const Duration(milliseconds: 2200));
+  yield PlayerState(false, ProcessingState.completed);
 }
 
 Future<List<Map<String, dynamic>>> convertZonesToList(List<Zone> zones) async {
@@ -215,4 +216,22 @@ Future<List<Map<String, dynamic>>> convertZoneToList(Zone zone) async {
   list.add(map);
 
   return list;
+}
+
+void resetInitialMusic() {
+  List<Music> musics = [
+    testMusicDefault,
+    testMusic,
+    testMusicChild1,
+    testMusicChild2,
+    testMusicParent
+  ];
+  List<Zone> zones = [zone, zoneChild1, zoneChild2, parent];
+  for (var music in musics) {
+    music.currentLevel = 0;
+    music.streamAudio?.cancel();
+  }
+  for (var z in zones) {
+    z.streamAudio?.cancel();
+  }
 }
