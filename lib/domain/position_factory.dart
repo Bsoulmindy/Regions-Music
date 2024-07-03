@@ -29,10 +29,10 @@ Future<void> updateCurrentZoneOnLocation(
     Zone? parent = state.currentZone!.parentZone;
     if (parent != null && parent.contains(pt)) {
       state.currentZone = parent;
-      return;
+    } else {
+      state.currentZone = null;
     }
-  }
-  if (state.currentZone == null || !state.currentZone!.contains(pt)) {
+  } else if (state.currentZone == null || !state.currentZone!.contains(pt)) {
     List<Zone> zones = await getMostParentZones(state.db, state.player);
     Zone? zone = await getCurrentZone(zones, pt, state.db, state.player);
     state.currentZone = zone;

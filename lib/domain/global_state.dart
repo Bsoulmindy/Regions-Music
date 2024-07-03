@@ -23,7 +23,7 @@ class GlobalState with ChangeNotifier {
   GlobalState({
     required Database db,
     required AudioPlayer player,
-    Music? defaultMusic,
+    required Music? defaultMusic,
     Music? currentMusic,
     Zone? currentZone,
     List<Zone> zones = const [],
