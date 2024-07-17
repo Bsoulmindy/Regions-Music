@@ -1,4 +1,4 @@
-name: Analyze and test
+name: CI/CD Pipeline
 
 on:
     push:
