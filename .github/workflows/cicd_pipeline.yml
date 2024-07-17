@@ -77,6 +77,8 @@ jobs:
 
             - run: dart run build_runner build
 
+            - run: flutter config --enable-web
+
             - name: Build
               run: flutter build web
 
@@ -104,6 +106,8 @@ jobs:
 
             - run: dart run build_runner build
 
+            - run: flutter config --enable-android
+
             - name: Build
               run: flutter build apk
 
@@ -130,6 +134,8 @@ jobs:
               run: flutter pub get
 
             - run: dart run build_runner build
+
+            - run: flutter config --enable-windows-desktop
 
             - name: Build
               run: flutter build windows
