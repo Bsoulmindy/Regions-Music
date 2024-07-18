@@ -77,8 +77,6 @@ jobs:
 
             - run: dart run build_runner build
 
-            - run: flutter create --platforms=web .
-
             - name: Build
               run: flutter build web
 
@@ -106,8 +104,6 @@ jobs:
 
             - run: dart run build_runner build
 
-            - run: flutter create --platforms=android .
-
             - name: Build
               run: flutter build apk
 
@@ -134,8 +130,6 @@ jobs:
               run: flutter pub get
 
             - run: dart run build_runner build
-
-            - run: flutter create --platforms=windows .
 
             - name: Build
               run: flutter build windows
