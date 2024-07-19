@@ -57,7 +57,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: regions_music_linux
-                  path: build/linux/release/bundle
+                  path: build/linux/x64/release/bundle
                   if-no-files-found: error
 
     build_web:
@@ -98,6 +98,12 @@ jobs:
               with:
                   channel: stable
                   flutter-version: 3.19.0
+
+            - name: Install JDK 17
+              uses: actions/setup-java@v4
+              with:
+                  distribution: "temurin"
+                  java-version: "17"
 
             - name: Install dependencies
               run: flutter pub get
