@@ -58,5 +58,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text(zone.name), findsOneWidget,
         reason: "We moved back to main zone from child zone 1");
+
+    await tester.pump(const Duration(milliseconds: 5000));
   });
 }

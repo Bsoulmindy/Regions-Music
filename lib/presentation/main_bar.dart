@@ -54,10 +54,12 @@ class MainBarState extends State<MainBar> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isLinux && Process.runSync("which", ["mpv"]).exitCode != 0) {
-      showMessage(
-          Exception(
-              "MPV package is not installed! Therefore we can't play music."),
-          context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showMessage(
+            Exception(
+                "MPV package is not installed! Therefore we can't play music."),
+            context);
+      });
     }
 
     return DefaultTabController(
