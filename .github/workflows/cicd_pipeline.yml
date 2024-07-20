@@ -117,7 +117,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: regions_music_android
-                  path: build/
+                  path: build/app/outputs/flutter-apk
                   if-no-files-found: error
 
     build_windows:
