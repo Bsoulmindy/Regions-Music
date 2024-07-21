@@ -7,14 +7,14 @@ import 'package:regions_music/application/zone_controller.dart';
 import 'package:regions_music/data/database.dart';
 import 'package:regions_music/domain/alert_exception.dart';
 import 'package:regions_music/domain/zone.dart';
-import 'package:regions_music/presentation/edit_modal_bottom.dart';
-import 'package:regions_music/presentation/form_info.dart';
-import 'package:regions_music/presentation/list_view_option.dart';
-import 'package:regions_music/presentation/music_info.dart';
+import 'package:regions_music/presentation/components/edit_modal_bottom.dart';
+import 'package:regions_music/presentation/tree/mapview/zones/zone_info/form_info/form_info.dart';
+import 'package:regions_music/presentation/components/list_view_option.dart';
+import 'package:regions_music/presentation/tree/music_info/music_info.dart';
 import 'package:sqflite/sqflite.dart';
-import '../data/file_picker.dart';
-import '../domain/form.dart' as f;
-import 'exception_message.dart';
+import '../../../../../data/file_picker.dart';
+import '../../../../../domain/form.dart' as f;
+import '../../../../components/exception_message.dart';
 
 class ZoneInfos extends StatefulWidget {
   const ZoneInfos(

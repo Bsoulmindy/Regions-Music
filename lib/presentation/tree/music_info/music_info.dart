@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:regions_music/application/music_controller.dart';
 import 'package:regions_music/domain/music.dart';
-import 'package:regions_music/presentation/edit_modal_bottom.dart';
-import 'package:regions_music/presentation/list_view_option.dart';
+import 'package:regions_music/presentation/components/edit_modal_bottom.dart';
+import 'package:regions_music/presentation/components/list_view_option.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MusicInfos extends StatefulWidget {

@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/zone.dart';
 
-class Status extends StatefulWidget {
-  const Status({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<Status> createState() => StatusState();
+  State<Dashboard> createState() => DashboardState();
 }
 
-class StatusState extends State<Status> {
+class DashboardState extends State<Dashboard> {
   String actualZone = "No Zone";
   int currentLevel = 0;
 
@@ -42,7 +42,7 @@ class StatusState extends State<Status> {
             height: 50,
             child: Container(
                 padding: const EdgeInsets.all(16),
-                color: Colors.red[600],
+                color: Theme.of(context).colorScheme.error,
                 child: Row(
                   children: [
                     const Icon(Icons.warning),
@@ -75,7 +75,7 @@ Widget getStatusZone(Zone? actualZone) {
           Text(actualZone != null ? actualZone.name : "No Zone",
               style: TextStyle(
                   fontSize: 20,
-                  color: actualZone != null ? Colors.red : Colors.green)),
+                  color: actualZone != null ? Colors.green : Colors.red)),
         ],
       ));
 }

@@ -7,13 +7,14 @@ import 'package:regions_music/application/music_controller.dart';
 import 'package:regions_music/data/file_picker.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
-import 'package:regions_music/presentation/music_info.dart';
-import 'package:regions_music/presentation/status.dart';
-import 'package:regions_music/presentation/zones.dart';
+import 'package:regions_music/presentation/tree/music_info/music_info.dart';
+import 'package:regions_music/presentation/tree/dashboard/dashboard.dart';
+import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
 
-import '../domain/alert_exception.dart';
-import 'exception_message.dart';
+import '../../domain/alert_exception.dart';
+import '../components/exception_message.dart';
 
+/// Main page
 class MainBar extends StatefulWidget {
   const MainBar({super.key});
 
@@ -81,7 +82,7 @@ class MainBarState extends State<MainBar> {
         body: const TabBarView(
           children: <Widget>[
             Center(
-              child: Status(),
+              child: Dashboard(),
             ),
             Center(
               child: Zones(),
@@ -91,12 +92,13 @@ class MainBarState extends State<MainBar> {
         drawer: Drawer(
             child: ListView(
           children: [
-            const SizedBox(
+            SizedBox(
                 height: 100,
                 child: DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.blue),
-                  margin: EdgeInsets.only(bottom: 0),
-                  child: Center(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary),
+                  margin: const EdgeInsets.only(bottom: 0),
+                  child: const Center(
                       child: Text(
                     "Settings",
                     style: TextStyle(

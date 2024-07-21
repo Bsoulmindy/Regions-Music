@@ -3,7 +3,7 @@ import 'package:regions_music/domain/form.dart' as f;
 import 'package:regions_music/domain/segment.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../domain/point.dart';
+import '../../../../../../domain/point.dart';
 
 class FormInfos extends StatefulWidget {
   const FormInfos({super.key, required this.form, required this.db});

@@ -8,7 +8,7 @@ import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
 import 'package:regions_music/domain/position_factory.dart';
 import 'package:regions_music/domain/zone.dart';
-import 'package:regions_music/presentation/main_bar.dart';
+import 'package:regions_music/presentation/tree/main_bar.dart';
 import '../utils/utils.dart';
 
 void main() {

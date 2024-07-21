@@ -7,7 +7,7 @@ import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/data/database.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/position_factory.dart';
-import 'package:regions_music/presentation/main_bar.dart';
+import 'package:regions_music/presentation/tree/main_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'application/zone_controller.dart' as z;
