@@ -10,7 +10,7 @@ import 'package:regions_music/domain/zone.dart';
 import 'package:regions_music/presentation/components/edit_modal_bottom.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zone_info/form_info/form_info.dart';
 import 'package:regions_music/presentation/components/list_view_option.dart';
-import 'package:regions_music/presentation/tree/music_info/music_info.dart';
+import 'package:regions_music/presentation/tree/mapview/zones/zone_info/music_info/music_info.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../../../../data/file_picker.dart';
 import '../../../../../domain/form.dart' as f;

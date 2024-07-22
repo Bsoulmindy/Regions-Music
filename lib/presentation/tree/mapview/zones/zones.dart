@@ -7,6 +7,7 @@ import 'package:regions_music/application/zone_controller.dart';
 import 'package:regions_music/data/database.dart' as z;
 import 'package:regions_music/data/file_picker.dart';
 import 'package:regions_music/domain/global_state.dart';
+import 'package:regions_music/presentation/components/data_loader_widget.dart';
 import 'package:regions_music/presentation/components/edit_modal_bottom.dart';
 import 'package:regions_music/presentation/components/list_view_option.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zone_info/zone_info.dart';
@@ -32,10 +33,9 @@ class ZonesState extends State<Zones> {
   Widget build(BuildContext context) {
     return Consumer<GlobalState>(
       builder: (BuildContext context, GlobalState state, Widget? child) =>
-          FutureBuilder(
+          DataLoaderWidget(
               future: z.getAllZones(state.db, state.player),
-              initialData: List<Zone>.empty(growable: true),
-              builder: ((context, AsyncSnapshot<List<Zone>> snapshot) {
+              onSuccess: ((context, List<Zone> data) {
                 return Scaffold(
                   body: Column(
                     children: [
@@ -48,15 +48,15 @@ class ZonesState extends State<Zones> {
                       ),
                       Expanded(
                           child: ListView(
-                        children: snapshot.data!
+                        children: data
                             .map((zone) => ListViewOption(
                                 text: zone.name,
                                 onLongPress: () {
-                                  editZone(context, zone, snapshot, state.db,
+                                  editZone(context, zone, data, state.db,
                                       state.player, setStateIfMounted);
                                 },
                                 onTap: () {
-                                  editZone(context, zone, snapshot, state.db,
+                                  editZone(context, zone, data, state.db,
                                       state.player, setStateIfMounted);
                                 }))
                             .toList(),
@@ -162,7 +162,7 @@ class ZonesState extends State<Zones> {
                                             imageFile!,
                                             musicFile!,
                                             null);
-                                        snapshot.data!.add(z);
+                                        data.add(z);
                                         setState(() {});
                                       } on AlertException catch (e) {
                                         if (!context.mounted) return;
@@ -184,13 +184,8 @@ class ZonesState extends State<Zones> {
   }
 }
 
-void editZone(
-    BuildContext context,
-    Zone zone,
-    AsyncSnapshot<List<Zone>> snapshot,
-    Database db,
-    AudioPlayer player,
-    void Function() setState) {
+void editZone(BuildContext context, Zone zone, List<Zone> data, Database db,
+    AudioPlayer player, void Function() setState) {
   showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -205,10 +200,7 @@ void editZone(
             onChange: () => {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ZoneInfos(
-                      zone: zone,
-                      allZones: snapshot.data!,
-                      db: db,
-                      player: player)))
+                      zone: zone, allZones: data, db: db, player: player)))
             },
           ));
 }

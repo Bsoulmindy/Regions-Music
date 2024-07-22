@@ -7,7 +7,7 @@ import 'package:regions_music/application/music_controller.dart';
 import 'package:regions_music/data/file_picker.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
-import 'package:regions_music/presentation/tree/music_info/music_info.dart';
+import 'package:regions_music/presentation/tree/mapview/zones/zone_info/music_info/music_info.dart';
 import 'package:regions_music/presentation/tree/dashboard/dashboard.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
 
