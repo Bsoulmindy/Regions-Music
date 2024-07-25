@@ -183,33 +183,15 @@ class ZoneInfosState extends State<ZoneInfos> {
                 ],
               ),
               Expanded(
-                  child: ListView(
-                children: snapshot.data!.space
+                  child: ListView(children: [
+                const Divider(
+                  indent: 100,
+                  endIndent: 100,
+                ),
+                ...snapshot.data!.space
                     .map((form) => ListViewOption(
                         text: form.name,
-                        onLongPress: () => {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => EditModalBottom(
-                                        change: "Change the form",
-                                        delete: "Delete the form",
-                                        onDelete: () async {
-                                          Navigator.pop(context);
-                                          await deleteForm(widget.db, form);
-                                          setState(() {
-                                            snapshot.data!.space.remove(form);
-                                          });
-                                        },
-                                        onChange: () => {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FormInfos(
-                                                          form: form,
-                                                          db: widget.db)))
-                                        },
-                                      ))
-                            },
+                        leading: const Icon(Icons.area_chart),
                         onTap: () => {
                               showModalBottomSheet(
                                   context: context,
@@ -234,7 +216,7 @@ class ZoneInfosState extends State<ZoneInfos> {
                                       ))
                             }))
                     .toList(),
-              ))
+              ]))
             ]),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {

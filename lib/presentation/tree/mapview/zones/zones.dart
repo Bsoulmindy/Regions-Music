@@ -48,18 +48,19 @@ class ZonesState extends State<Zones> {
                       ),
                       Expanded(
                           child: ListView(
-                        children: data
-                            .map((zone) => ListViewOption(
-                                text: zone.name,
-                                onLongPress: () {
-                                  editZone(context, zone, data, state.db,
-                                      state.player, setStateIfMounted);
-                                },
-                                onTap: () {
-                                  editZone(context, zone, data, state.db,
-                                      state.player, setStateIfMounted);
-                                }))
-                            .toList(),
+                        children: [
+                          const Divider(
+                            indent: 100,
+                            endIndent: 100,
+                          ),
+                          ...data.map((zone) => ListViewOption(
+                              leading: const Icon(Icons.place),
+                              text: zone.name,
+                              onTap: () {
+                                editZone(context, zone, data, state.db,
+                                    state.player, setStateIfMounted);
+                              }))
+                        ],
                       ))
                     ],
                   ),

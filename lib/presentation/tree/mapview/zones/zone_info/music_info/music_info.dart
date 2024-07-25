@@ -28,19 +28,19 @@ class MusicInfosState extends State<MusicInfos> {
       appBar: AppBar(
         title: const Text("Music levels"),
       ),
-      body: ListView(
-          children: widget.music.levels
-              .map((level) => ListViewOption(
-                  text: convertLevelToTime(level),
-                  onLongPress: () {
-                    editLevel(context, time, level, widget.db, widget.music,
-                        setStateIfMounted);
-                  },
-                  onTap: () {
-                    editLevel(context, time, level, widget.db, widget.music,
-                        setStateIfMounted);
-                  }))
-              .toList()),
+      body: ListView(children: [
+        const Divider(
+          indent: 100,
+          endIndent: 100,
+        ),
+        ...widget.music.levels.map((level) => ListViewOption(
+            text: convertLevelToTime(level),
+            leading: const Icon(Icons.music_video),
+            onTap: () {
+              editLevel(context, time, level, widget.db, widget.music,
+                  setStateIfMounted);
+            }))
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           time = null;
