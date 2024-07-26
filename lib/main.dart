@@ -8,6 +8,7 @@ import 'package:regions_music/data/database.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/position_factory.dart';
 import 'package:regions_music/presentation/tree/main_bar.dart';
+import 'package:regions_music/theme.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'application/zone_controller.dart' as z;
@@ -36,9 +37,11 @@ void main() async {
   runApp(MediaQuery(
     data: const MediaQueryData(),
     child: MaterialApp(
+        theme: ThemeData.from(colorScheme: MaterialTheme.lightScheme()),
+        darkTheme: ThemeData.from(colorScheme: MaterialTheme.darkScheme()),
         home: ChangeNotifierProvider.value(
-      value: globalState,
-      child: const MainBar(),
-    )),
+          value: globalState,
+          child: const MainBar(),
+        )),
   ));
 }

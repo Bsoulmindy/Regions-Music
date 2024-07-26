@@ -34,16 +34,12 @@ class MainBarState extends State<MainBar> {
             return AlertDialog(
                 title: const Text('Do you really want to quit?'),
                 actions: [
-                  Consumer<GlobalState>(
-                    builder: (BuildContext context, GlobalState state,
-                            Widget? child) =>
-                        ElevatedButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop(true);
-                              await state.player.stop();
-                            },
-                            child: const Text('Yes')),
-                  ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop(true);
+                        await context.read<GlobalState>().player.stop();
+                      },
+                      child: const Text('Yes')),
                   ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
                       child: const Text('No')),
