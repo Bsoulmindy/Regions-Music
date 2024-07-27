@@ -34,14 +34,17 @@ void main() async {
   getGPSStreamPosition()
       .listen((pos) => updateCurrentZoneOnLocation(globalState, pos));
 
-  runApp(MediaQuery(
-    data: const MediaQueryData(),
-    child: MaterialApp(
-        theme: ThemeData.from(colorScheme: MaterialTheme.lightScheme()),
-        darkTheme: ThemeData.from(colorScheme: MaterialTheme.darkScheme()),
-        home: ChangeNotifierProvider.value(
-          value: globalState,
-          child: const MainBar(),
-        )),
-  ));
+  runApp(
+    ChangeNotifierProvider<GlobalState>.value(
+      value: globalState,
+      child: MediaQuery(
+        data: const MediaQueryData(),
+        child: MaterialApp(
+          theme: ThemeData(colorScheme: MaterialTheme.lightScheme()),
+          darkTheme: ThemeData.from(colorScheme: MaterialTheme.darkScheme()),
+          home: const MainBar(),
+        ),
+      ),
+    ),
+  );
 }

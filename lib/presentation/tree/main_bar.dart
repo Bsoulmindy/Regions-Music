@@ -64,8 +64,16 @@ class MainBarState extends State<MainBar> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          bottom: const TabBar(
-            tabs: <Widget>[
+          iconTheme: IconThemeData(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          bottom: TabBar(
+            indicatorColor: Theme.of(context).colorScheme.onPrimary,
+            labelColor: Theme.of(context).colorScheme.onPrimary,
+            unselectedLabelColor:
+                Theme.of(context).colorScheme.onPrimary.withOpacity(0.6),
+            tabs: const <Widget>[
               Tab(
                 text: "Status",
               ),
