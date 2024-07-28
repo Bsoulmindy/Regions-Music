@@ -9,6 +9,7 @@ import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/domain/music.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zone_info/music_info/music_info.dart';
 import 'package:regions_music/presentation/tree/dashboard/dashboard.dart';
+import 'package:regions_music/presentation/tree/mapview/map_view.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
 
 import '../../domain/alert_exception.dart';
@@ -22,10 +23,17 @@ class MainBar extends StatefulWidget {
   State<MainBar> createState() => MainBarState();
 }
 
-class MainBarState extends State<MainBar> {
+class MainBarState extends State<MainBar> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+
+    _tabController = TabController(vsync: this, length: 2);
+    _tabController.addListener(() {
+      setState(() {});
+    });
 
     FlutterWindowClose.setWindowShouldCloseHandler(() async {
       return await showDialog(
@@ -49,6 +57,12 @@ class MainBarState extends State<MainBar> {
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (Platform.isLinux && Process.runSync("which", ["mpv"]).exitCode != 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,6 +83,7 @@ class MainBarState extends State<MainBar> {
           ),
           backgroundColor: Theme.of(context).colorScheme.primary,
           bottom: TabBar(
+            controller: _tabController,
             indicatorColor: Theme.of(context).colorScheme.onPrimary,
             labelColor: Theme.of(context).colorScheme.onPrimary,
             unselectedLabelColor:
@@ -78,21 +93,33 @@ class MainBarState extends State<MainBar> {
                 text: "Status",
               ),
               Tab(
-                text: "Manage",
+                text: "Map",
               ),
             ],
           ),
         ),
-        body: const TabBarView(
-          children: <Widget>[
+        body: TabBarView(
+          controller: _tabController,
+          children: const <Widget>[
             Center(
               child: Dashboard(),
             ),
             Center(
-              child: Zones(),
+              child: MapView(),
             ),
           ],
         ),
+        floatingActionButton: _tabController.index == 0
+            ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Zones()),
+                  );
+                },
+                child: const Icon(Icons.architecture),
+              )
+            : null,
         drawer: Drawer(
             child: ListView(
           children: [

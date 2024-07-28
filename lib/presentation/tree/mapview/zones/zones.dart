@@ -37,33 +37,27 @@ class ZonesState extends State<Zones> {
               future: z.getAllZones(state.db, state.player),
               onSuccess: ((context, List<Zone> data) {
                 return Scaffold(
-                  body: Column(
-                    children: [
-                      const Center(
-                        child: Text(
-                          "Zones",
-                          style: TextStyle(fontSize: 32),
-                          textAlign: TextAlign.center,
-                        ),
+                  appBar: AppBar(
+                    title: const Center(
+                      child: Text(
+                        "Zones",
+                        style: TextStyle(fontSize: 32),
+                        textAlign: TextAlign.center,
                       ),
-                      Expanded(
-                          child: ListView(
-                        children: [
-                          const Divider(
-                            indent: 100,
-                            endIndent: 100,
-                          ),
-                          ...data.map((zone) => ListViewOption(
-                              leading: const Icon(Icons.place),
-                              text: zone.name,
-                              onTap: () {
-                                editZone(context, zone, data, state.db,
-                                    state.player, setStateIfMounted);
-                              }))
-                        ],
-                      ))
-                    ],
+                    ),
                   ),
+                  body: Expanded(
+                      child: ListView(
+                    children: [
+                      ...data.map((zone) => ListViewOption(
+                          leading: const Icon(Icons.place),
+                          text: zone.name,
+                          onTap: () {
+                            editZone(context, zone, data, state.db,
+                                state.player, setStateIfMounted);
+                          }))
+                    ],
+                  )),
                   floatingActionButton: FloatingActionButton(
                     onPressed: () {
                       showDialog(
