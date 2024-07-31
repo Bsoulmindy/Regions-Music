@@ -46,8 +46,7 @@ class ZonesState extends State<Zones> {
                       ),
                     ),
                   ),
-                  body: Expanded(
-                      child: ListView(
+                  body: ListView(
                     children: [
                       ...data.map((zone) => ListViewOption(
                           leading: const Icon(Icons.place),
@@ -57,7 +56,7 @@ class ZonesState extends State<Zones> {
                                 state.player, setStateIfMounted);
                           }))
                     ],
-                  )),
+                  ),
                   floatingActionButton: FloatingActionButton(
                     onPressed: () {
                       showDialog(

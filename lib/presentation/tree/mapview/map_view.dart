@@ -23,6 +23,8 @@ class MapViewState extends State<MapView> {
         initialCenter: LatLng(30.36, -9.51),
         initialZoom: 4.0,
         keepAlive: true,
+        maxZoom: 14,
+        minZoom: 3,
       ),
       children: [
         TileLayer(
@@ -48,10 +50,11 @@ class MapViewState extends State<MapView> {
                 // Zoom in
                 Builder(
                   builder: (context) => FloatingActionButton(
+                    heroTag: "zoomin-button",
                     shape: const Border(bottom: BorderSide()),
                     onPressed: () {
                       _mapController.move(MapCamera.of(context).center,
-                          min(MapCamera.of(context).zoom + 0.5, 20));
+                          min(MapCamera.of(context).zoom + 1, 14));
                     },
                     child: const Icon(Icons.add),
                   ),
@@ -60,12 +63,13 @@ class MapViewState extends State<MapView> {
                 // Zoom out
                 Builder(builder: (context) {
                   return FloatingActionButton(
+                    heroTag: "zoomout-button",
                     shape: Border(
                         top: BorderSide(
                             color: Theme.of(context).colorScheme.onSecondary)),
                     onPressed: () {
                       _mapController.move(MapCamera.of(context).center,
-                          max(MapCamera.of(context).zoom - 0.5, 3));
+                          max(MapCamera.of(context).zoom - 1, 3));
                     },
                     child: const Icon(Icons.remove),
                   );
@@ -73,6 +77,7 @@ class MapViewState extends State<MapView> {
                 const SizedBox(height: 10),
                 // Go to Zones page
                 FloatingActionButton(
+                  heroTag: "zonespage-button",
                   onPressed: () {
                     Navigator.push(
                       context,

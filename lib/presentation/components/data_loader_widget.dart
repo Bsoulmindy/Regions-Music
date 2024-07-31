@@ -20,8 +20,10 @@ class DataLoaderWidget<T> extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // The future is loading
-          return loadingIndicator ??
-              const Center(child: CircularProgressIndicator());
+          return Scaffold(
+            body: loadingIndicator ??
+                const Center(child: CircularProgressIndicator()),
+          );
         } else if (snapshot.hasError) {
           // The future failed
           return onError != null
