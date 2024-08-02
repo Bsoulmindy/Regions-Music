@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
 
 class MapView extends StatefulWidget {
@@ -14,6 +17,19 @@ class MapView extends StatefulWidget {
 
 class MapViewState extends State<MapView> {
   final _mapController = MapController();
+  LatLng? _userPos;
+  late StreamSubscription<Position> _gpsStreamListener;
+
+  @override
+  void initState() {
+    _gpsStreamListener = getGPSStreamPosition().listen((pos) {
+      setState(() {
+        _userPos = LatLng(pos.latitude, pos.longitude);
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +56,18 @@ class MapViewState extends State<MapView> {
             ),
           ],
         ),
+        MarkerLayer(
+          markers: _userPos != null
+              ? [
+                  Marker(
+                    point: _userPos!,
+                    width: 24,
+                    height: 24,
+                    child: const Icon(Icons.gps_fixed),
+                  ),
+                ]
+              : [],
+        ),
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -47,6 +75,19 @@ class MapViewState extends State<MapView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                // Move to current position if available
+                FloatingActionButton(
+                  heroTag: "moveCurrPos-button",
+                  onPressed: () {
+                    LatLng? currUserPos = _userPos;
+                    // If the current position is not found yet, do nothing
+                    if (currUserPos == null) return;
+                    _mapController.move(
+                        currUserPos, MapCamera.of(context).zoom);
+                  },
+                  child: const Icon(Icons.gps_fixed),
+                ),
+                const SizedBox(height: 10),
                 // Zoom in
                 Builder(
                   builder: (context) => FloatingActionButton(
@@ -97,6 +138,7 @@ class MapViewState extends State<MapView> {
   @override
   void dispose() {
     _mapController.dispose();
+    _gpsStreamListener.cancel();
     super.dispose();
   }
 }

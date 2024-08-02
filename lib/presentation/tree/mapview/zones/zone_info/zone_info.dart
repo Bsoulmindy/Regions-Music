@@ -188,34 +188,30 @@ class ZoneInfosState extends State<ZoneInfos> {
                   indent: 100,
                   endIndent: 100,
                 ),
-                ...snapshot.data!.space
-                    .map((form) => ListViewOption(
-                        text: form.name,
-                        leading: const Icon(Icons.area_chart),
-                        onTap: () => {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => EditModalBottom(
-                                        change: "Change the form",
-                                        delete: "Delete the form",
-                                        onDelete: () async {
-                                          Navigator.pop(context);
-                                          await deleteForm(widget.db, form);
-                                          setState(() {
-                                            snapshot.data!.space.remove(form);
-                                          });
-                                        },
-                                        onChange: () => {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FormInfos(
-                                                          form: form,
-                                                          db: widget.db)))
-                                        },
-                                      ))
-                            }))
-                    .toList(),
+                ...snapshot.data!.space.map((form) => ListViewOption(
+                    text: form.name,
+                    leading: const Icon(Icons.area_chart),
+                    onTap: () => {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) => EditModalBottom(
+                                    change: "Change the form",
+                                    delete: "Delete the form",
+                                    onDelete: () async {
+                                      Navigator.pop(context);
+                                      await deleteForm(widget.db, form);
+                                      setState(() {
+                                        snapshot.data!.space.remove(form);
+                                      });
+                                    },
+                                    onChange: () => {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => FormInfos(
+                                                  form: form, db: widget.db)))
+                                    },
+                                  ))
+                        })),
               ]))
             ]),
             floatingActionButton: FloatingActionButton(
