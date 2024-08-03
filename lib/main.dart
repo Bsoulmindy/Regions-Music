@@ -27,7 +27,7 @@ void main() async {
   Database db = await getData();
   AudioPlayer player = AudioPlayer();
   Music? defaultMusic = await getDefaultMusic(db, player);
-  List<Zone> zones = await z.getAllZones(db, player);
+  List<Zone> zones = await z.getZones(db, player);
 
   var globalState = GlobalState(
       db: db, player: player, defaultMusic: defaultMusic, zones: zones);

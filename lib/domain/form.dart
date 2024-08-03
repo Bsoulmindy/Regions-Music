@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'segment.dart';
 import 'point.dart';
 import 'dart:math';
@@ -73,5 +75,47 @@ class Form {
     }
 
     return count % 2 == 1;
+  }
+
+  Set<Point> getPoints() {
+    Set<Point> points = {};
+
+    for (Segment segment in segments) {
+      Point pt = Point(segment.minT, segment.minT * segment.u + segment.v);
+      points.add(pt);
+      pt = Point(segment.maxT, segment.maxT * segment.u + segment.v);
+      points.add(pt);
+    }
+
+    return points;
+  }
+
+  Color getAreaColor() {
+    int modulo = id % 10;
+    switch (modulo) {
+      case 1:
+        return const Color.fromARGB(64, 255, 0, 0);
+      case 2:
+        return const Color.fromARGB(64, 255, 123, 0);
+      case 3:
+        return const Color.fromARGB(64, 251, 255, 0);
+      case 4:
+        return const Color.fromARGB(64, 81, 255, 0);
+      case 5:
+        return const Color.fromARGB(64, 0, 255, 106);
+      case 6:
+        return const Color.fromARGB(64, 0, 255, 242);
+      case 7:
+        return const Color.fromARGB(64, 0, 110, 255);
+      case 8:
+        return const Color.fromARGB(64, 17, 0, 255);
+      case 9:
+        return const Color.fromARGB(64, 153, 0, 255);
+      case 0:
+        return const Color.fromARGB(64, 247, 0, 255);
+
+      default:
+        return const Color.fromARGB(64, 0, 0, 0);
+    }
   }
 }

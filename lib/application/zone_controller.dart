@@ -113,8 +113,13 @@ Future<void> removeZone(Database db, Zone zone) async {
   await deleteZone(db, zone);
 }
 
+/// Get all zones
+Future<List<Zone>> getZones(Database db, AudioPlayer player) async {
+  return await getAllZones(db, player);
+}
+
 /// Get all zones from database as form of tree whereas the root nodes are the most children
-Future<List<Zone>> getAllZones(Database db, AudioPlayer player) async {
+Future<List<Zone>> getLeafZones(Database db, AudioPlayer player) async {
   List<Zone> result = [];
   List<Zone> tmp = await getMostParentZones(db, player);
   List<Zone> tmp2 = [];

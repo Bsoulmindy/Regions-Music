@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:regions_music/application/gps.dart';
+import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
 
 class MapView extends StatefulWidget {
@@ -47,15 +49,23 @@ class MapViewState extends State<MapView> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'ma.bhc.regions_music',
         ),
-        RichAttributionWidget(
-          alignment: AttributionAlignment.bottomLeft,
-          attributions: [
-            TextSourceAttribution(
-              'OpenStreetMap contributors',
-              onTap: () => (Uri.parse('https://openstreetmap.org/copyright')),
-            ),
-          ],
-        ),
+        Consumer<GlobalState>(
+            builder: (BuildContext context, GlobalState state, Widget? child) {
+          List<Polygon> polygons = [];
+          for (var zone in state.zones) {
+            for (var form in zone.space) {
+              polygons.add(Polygon(
+                color: form.getAreaColor(),
+                points: form
+                    .getPoints()
+                    .map((point) => LatLng(point.x, point.y))
+                    .toList(),
+              ));
+            }
+          }
+
+          return PolygonLayer(polygons: polygons);
+        }),
         MarkerLayer(
           markers: _userPos != null
               ? [
@@ -67,6 +77,15 @@ class MapViewState extends State<MapView> {
                   ),
                 ]
               : [],
+        ),
+        RichAttributionWidget(
+          alignment: AttributionAlignment.bottomLeft,
+          attributions: [
+            TextSourceAttribution(
+              'OpenStreetMap contributors',
+              onTap: () => (Uri.parse('https://openstreetmap.org/copyright')),
+            ),
+          ],
         ),
         Align(
           alignment: Alignment.bottomRight,
