@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/domain/global_state.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
+import 'package:regions_music/domain/zone.dart';
+import 'package:regions_music/domain/form.dart' as f;
 
 class MapView extends StatefulWidget {
   const MapView({super.key});
@@ -20,7 +22,10 @@ class MapView extends StatefulWidget {
 class MapViewState extends State<MapView> {
   final _mapController = MapController();
   LatLng? _userPos;
+
+  /// Position of the overlay widget shown when the user tap on any form polygon
   late StreamSubscription<Position> _gpsStreamListener;
+  final LayerHitNotifier<Object> formHitNotifier = ValueNotifier(null);
 
   @override
   void initState() {
@@ -54,17 +59,33 @@ class MapViewState extends State<MapView> {
           List<Polygon> polygons = [];
           for (var zone in state.zones) {
             for (var form in zone.space) {
-              polygons.add(Polygon(
-                color: form.getAreaColor(),
-                points: form
-                    .getPoints()
-                    .map((point) => LatLng(point.x, point.y))
-                    .toList(),
-              ));
+              polygons.add(Polygon<PolygonFormHitValue>(
+                  color: zone.getAreaColor(),
+                  points: form
+                      .getPoints()
+                      .map((point) => LatLng(point.x, point.y))
+                      .toList(),
+                  hitValue: PolygonFormHitValue(zone, form)));
             }
           }
 
-          return PolygonLayer(polygons: polygons);
+          return MouseRegion(
+              hitTestBehavior: HitTestBehavior.deferToChild,
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                  onTap: () {
+                    final LayerHitResult<Object>? hitResult =
+                        formHitNotifier.value;
+                    if (hitResult == null) return;
+
+                    for (final hitValue in hitResult.hitValues) {
+                      if (hitValue is PolygonFormHitValue) {
+                        _openFormModal(hitValue);
+                      }
+                    }
+                  },
+                  child: PolygonLayer(
+                      hitNotifier: formHitNotifier, polygons: polygons)));
         }),
         MarkerLayer(
           markers: _userPos != null
@@ -160,4 +181,55 @@ class MapViewState extends State<MapView> {
     _gpsStreamListener.cancel();
     super.dispose();
   }
+
+  void _openFormModal(PolygonFormHitValue hitValue) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Wrap(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${hitValue.zone.name} (Form ${hitValue.form.id})',
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Close'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The informations catched when the user clicks on a form polygon
+class PolygonFormHitValue {
+  final Zone zone;
+  final f.Form form;
+
+  PolygonFormHitValue(this.zone, this.form);
 }
