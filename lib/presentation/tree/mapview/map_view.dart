@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:regions_music/application/gps.dart';
 import 'package:regions_music/domain/global_state.dart';
+import 'package:regions_music/presentation/tree/mapview/zones/zone_info/form_info/form_info.dart';
 import 'package:regions_music/presentation/tree/mapview/zones/zones.dart';
 import 'package:regions_music/domain/zone.dart';
 import 'package:regions_music/domain/form.dart' as f;
@@ -209,12 +210,31 @@ class MapViewState extends State<MapView> {
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Close'),
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          child: FilledButton(
+                            onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => FormInfos(
+                                        form: hitValue.form,
+                                        db: context.read<GlobalState>().db))),
+                            child: const Text('View'),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.all(10),
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Close'),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
